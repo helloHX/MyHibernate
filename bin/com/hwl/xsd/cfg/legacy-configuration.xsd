@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.hwl.org/legacy-configuration" xmlns:tns="http://www.hwl.org/legacy-configuration"
+	elementFormDefault="qualified"
+	version="1.0">
+	
+	<xs:complexType name="ConfigPropertyType" mixed="true">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" use="required" type="xs:string" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<xs:complexType name="MappingReferenceType">
+		<xs:attribute name="class" type="xs:string" />
+		<xs:attribute name="file" type="xs:string" />
+		<xs:attribute name="jar" type="xs:string" />
+		<xs:attribute name="package" type="xs:string" />
+		<xs:attribute name="resource" type="xs:string" />
+	</xs:complexType>
+	
+	<xs:element name="hibernate-configuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="property" minOccurs="0" maxOccurs="unbounded"
+					type="tns:ConfigPropertyType" />
+				<xs:element name="mapping" minOccurs="0" maxOccurs="unbounded"
+					type="tns:MappingReferenceType" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+
+</xs:schema>

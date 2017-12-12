@@ -1,0 +1,55 @@
+package com.hwl.hibernate.cfg;
+
+
+import com.hwl.hibernate.cfg.jaxb.JaxbCfgMappingReferenceType;
+
+/**
+  * class MappingReference
+  * @author huangWenLong
+  * @date 2017Äê12ÔÂ8ÈÕ
+  */
+public class MappingReference {
+	public static enum Type {
+		RESOURCE,
+		CLASS,
+		FILE,
+		JAR,
+		PACKAGE
+	}
+	private final Type type;
+	private final String reference;
+	
+	public MappingReference(Type type, String reference) {
+		this.type = type;
+		this.reference = reference;
+	}
+	
+
+	public Type getType() {
+		return type;
+	}
+
+	public String getReference() {
+		return reference;
+	}
+	
+	public static MappingReference consume(JaxbCfgMappingReferenceType jaxbMapping) {
+		if ( !"".equals(jaxbMapping.getClazz()) ) {
+			return new MappingReference( MappingReference.Type.CLASS, jaxbMapping.getClazz() );
+		}
+		else if ( !"".equals( jaxbMapping.getFile() ) ) {
+			return  new MappingReference( MappingReference.Type.FILE, jaxbMapping.getFile() );
+		}
+		else if ( !"".equals(jaxbMapping.getResource() ) ) {
+			return new MappingReference( MappingReference.Type.RESOURCE, jaxbMapping.getResource() );
+		}
+		else if (!"".equals( jaxbMapping.getJar() ) ) {
+			return new MappingReference( MappingReference.Type.JAR, jaxbMapping.getJar() );
+		}
+		else if (!"".equals( jaxbMapping.get_package()) ) {
+			return new MappingReference( MappingReference.Type.PACKAGE, jaxbMapping.get_package() );
+		}
+		return null;
+	}
+	
+}

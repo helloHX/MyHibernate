@@ -1,0 +1,14 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<hibernate-mapping>
+	
+	<class name="com.hwl.entity.ClassRoom" table="classroom">
+		<id name="id" type="integer" column="id">
+			<generator class="native" />
+		</id>
+		<property name="code" column="code" type="string" />
+		<set name="students">
+			<key column="classRoomId" />
+			<one-to-many class="com.hwl.entity.Student" />
+		</set>
+	</class>
+</hibernate-mapping>

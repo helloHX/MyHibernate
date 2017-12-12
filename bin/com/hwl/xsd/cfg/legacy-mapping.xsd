@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.hwl.org/legacy-mapping" xmlns:tns="http://www.hwl.org/legacy-mapping"
+	elementFormDefault="qualified" version="1.0">
+
+	<xs:element name="hibernate-mapping">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="class" type="tns:class"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="class">
+		<xs:sequence>
+			<xs:element name="id" minOccurs="1" maxOccurs="unbounded"
+				type="xs:string"></xs:element>
+			<xs:element name="property" minOccurs="0" maxOccurs="unbounded"
+				type="xs:string"></xs:element>
+			<xs:choice>
+				<xs:element name="set">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="key" minOccurs="1" maxOccurs="1">
+								<xs:complexType>
+									<xs:attribute name="column" type="xs:string"></xs:attribute>
+								</xs:complexType>
+							</xs:element>
+							<xs:choice>
+								<xs:element name="many-to-many" type="tns:associated"></xs:element>
+								<xs:element name="one-to-many" type="tns:associated"></xs:element>
+							</xs:choice>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="many-to-one"></xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="table" type="xs:string" />
+		<xs:attribute name="layz" type="xs:boolean" default="false" />
+	</xs:complexType>
+
+	<xs:complexType name="associated">
+		<xs:attribute name="class" type="xs:string"></xs:attribute>
+		<xs:attribute name="column" type="xs:string"></xs:attribute>
+		<xs:attribute name="lazy" type="xs:boolean" default="false"></xs:attribute>
+	</xs:complexType>
+</xs:schema>
