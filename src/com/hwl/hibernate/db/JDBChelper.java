@@ -17,7 +17,7 @@ public class JDBChelper {
 	private MyRegistry myRegistry;
 	private Connection connection;
 	private static final String JDBDRIVER = "connection.driver_class";
-	private static final String USERNAME = "connection.userName";
+	private static final String USERNAME = "connection.username";
 	private static final String PWD = "connection.password";
 	private static final String URL = "connection.url";
 

@@ -15,7 +15,7 @@ import com.hwl.hibernate.cfg.jaxb.JaxbCfgHibernateConfiguration.JaxbCfgSessionFa
  * @author huangWenLong
  * @date 2017年12月6日
  */
-@XmlType( propOrder = { "jaxCfgClassId", "propertys", "jaxCfgSet","manyToOneList"})
+@XmlType( propOrder = { "jaxCfgClassId", "propertys", "jaxCfgSet","manyToOneList","oneToOneList"})
 @XmlRootElement(name = "class")
 public class JabCfgClass {
 	private String name;
@@ -27,8 +27,16 @@ public class JabCfgClass {
 	private List<JacCfgClassProperty> propertys;
 	private List<JabCfgSet> jaxCfgSet;
 	private List<JabCfgManyToOne> manyToOneList;
+	private List<JabCfgOneToOne> oneToOneList;
 	
-	
+	public List<JabCfgOneToOne> getOneToOneList() {
+		return oneToOneList;
+	}
+	@XmlElement(name="one-to-one")
+	public void setOneToOneList(List<JabCfgOneToOne> oneToOneList) {
+		this.oneToOneList = oneToOneList;
+	}
+
 	public List<JabCfgManyToOne> getManyToOneList() {
 		return manyToOneList;
 	}
@@ -42,7 +50,7 @@ public class JabCfgClass {
 		return jaxCfgSet;
 	}
 
-	@XmlElement(name="property")
+	@XmlElement(name="set")
 	public void setJaxCfgSet(List<JabCfgSet> jaxCfgSet) {
 		this.jaxCfgSet = jaxCfgSet;
 	}
@@ -152,7 +160,7 @@ public class JabCfgClass {
 	
 	@XmlRootElement(name = "property")
 	public static class JacCfgClassProperty{
-		private String name;
+		private String name;//属性
 		private String column;
 		private String type;
 		private boolean lazy;

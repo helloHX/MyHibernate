@@ -1,5 +1,6 @@
 package com.hwl.hibernate.cfg;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class MyRegistry {
 	public MyRegistry() {
 		super();
 		this.settings = new HashMap<>();
+		this.mappings = new ArrayList<>();
 		configLoader = new ConfigLoader();
 	}
 

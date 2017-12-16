@@ -36,7 +36,7 @@ public class JaxbCfgHibernateConfiguration {
 			return propertys;
 		}
 
-		@XmlElement(name = "propertys")
+		@XmlElement(name = "property")
 		public void setPropertys(List<JaxbCfgConfigPropertyType> propertys) {
 			this.propertys = propertys;
 		}

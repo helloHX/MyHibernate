@@ -1,5 +1,6 @@
 package com.hwl.hibernate.cfg;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +20,7 @@ import com.hwl.hibernate.cfg.jaxb.JaxbCfgMappingReferenceType;
 public class LoadedConfig {
 	
 	private Map<String,String> propertys = new HashMap<>();
-	private List<MappingReference> mapping;
+	private List<MappingReference> mapping = new ArrayList<>();
 
 	public Map<String, String> getPropertys() {
 		return propertys;

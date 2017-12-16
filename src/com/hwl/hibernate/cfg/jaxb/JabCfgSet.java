@@ -71,7 +71,7 @@ public class JabCfgSet {
 			return column;
 		}
 
-		@XmlAttribute(name = "id", required = true)
+		@XmlAttribute(name = "column", required = true)
 		public void setColumn(String column) {
 			this.column = column;
 		}

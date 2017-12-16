@@ -1,6 +1,9 @@
 package com.hwl.hibernate;
 
+import java.util.List;
+
 import com.hwl.hibernate.db.JDBChelper;
+import com.hwl.hibernate.entity.EntityPersister;
 
 /**
   * class SessionFactory
@@ -10,6 +13,8 @@ import com.hwl.hibernate.db.JDBChelper;
 public interface SessionFactory {
 	String	getName();
 	Session openSession();
+	List<EntityPersister> getMetaModels();
+	EntityPersister getMetaModel(String entityName);
 	Session getCurrentSession();
 	void close();
 	boolean isClosed();

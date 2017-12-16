@@ -22,7 +22,7 @@ class UnmarshalTest {
 
 	@Test
 	void test() throws JAXBException {
-		String resource = "src/com/hwl/hibernate/test/ClassRoom.hbm.xml";
+		String resource = "com/hwl/hibernate/test/ClassRoom.hbm.xml";
 		TableEntityPersister tableEntityPersister = (TableEntityPersister) TableEntityPersister.consume(resource);
 		System.out.println(tableEntityPersister.getClassName());
 		System.out.println(tableEntityPersister.getColunmId());

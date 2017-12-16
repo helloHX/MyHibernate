@@ -1,9 +1,11 @@
 package com.hwl.hibernate.entity;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -20,23 +22,47 @@ import com.hwl.hibernate.cfg.jaxb.JabCfgClass.JacCfgClassProperty;
  * @date 2017年12月11日
  */
 public class TableEntityPersister implements EntityPersister {
+	
 	private String className;
 	private String tableName;
-	private String entityId;
-	private String colunmId;
+	private String entityId;//主键属性名
+	private String colunmId;//主键表列名
 	private String idType;
 	private boolean lazy;
-	private Map<String, PersisterProperty> propertys;// 数据库字段与实体字段的对应
+	private Map<String,String> foreignId;//一对一/多的属性-外键
+	private Map<String, PersisterProperty> propertys;// 实体属性名与数据库字段信息的键值对
+	private Map<String,String> fieldMap;//数据库字段-属性
+	private Map<String,String> subClassMap;//数据库外键-属性
 	private Map<String, SubClassPersister> subClass;// 外联表的关联
 
 	public TableEntityPersister() {
+		foreignId = new HashMap<>();
 		propertys = new HashMap<>();
 		subClass = new HashMap<>();
-		
+		subClassMap = new HashMap<>();
+		fieldMap = new HashMap<>();
 	}
 	
+	public void addForeignId(String name,String idName) {
+		this.foreignId.put(name, idName);
+	}
+	
+	
+	public Map<String, String> getForeignId() {
+		return foreignId;
+	}
+
 	public void addSubClass(String name,SubClassPersister subClassPersister) {
+		this.subClassMap.put(subClassPersister.getPrimaryKey(), name);
 		this.subClass.put(name, subClassPersister);
+	}
+	
+	public String getFiledName(String colunm) {
+		return fieldMap.get(colunm);
+	}
+	
+	public String getSubClassName(String colunm) {
+		return fieldMap.get(colunm);
 	}
 	
 	public boolean isLazy() {
@@ -89,6 +115,7 @@ public class TableEntityPersister implements EntityPersister {
 	}
 
 	public void addProperty(String name, PersisterProperty property) {
+		this.fieldMap.put(property.getColunm(), name);
 		this.propertys.put(name, property);
 	}
 
@@ -111,7 +138,6 @@ public class TableEntityPersister implements EntityPersister {
 	 */
 	@Override
 	public String getTableName() {
-		// TODO Auto-generated method stub
 		return this.tableName;
 	}
 
@@ -123,9 +149,10 @@ public class TableEntityPersister implements EntityPersister {
 	 * @date: 2017年12月12日 下午3:48:39
 	 */
 	public static EntityPersister consume(String resource) {
+		String resourcePath = resource;
 		TableEntityPersister entityPersister = new TableEntityPersister();
 		try {
-			JaxbCfgHibernateMapping mapping = CfgProcessor.unmarshalMapping(resource);
+			JaxbCfgHibernateMapping mapping = CfgProcessor.unmarshalMapping(resourcePath);
 			
 			entityPersister.setClassName(mapping.getJabCfgClass().getName());
 			entityPersister.setTableName(mapping.getJabCfgClass().getTable());
@@ -133,6 +160,10 @@ public class TableEntityPersister implements EntityPersister {
 			entityPersister.setEntityId(mapping.getJabCfgClass().getJaxCfgClassId().getName());
 			entityPersister.setColunmId(mapping.getJabCfgClass().getJaxCfgClassId().getColumn());
 			entityPersister.setIdType(mapping.getJabCfgClass().getJaxCfgClassId().getType());
+			
+			entityPersister.addProperty(entityPersister.getEntityId(),
+					new PersisterProperty(entityPersister.getColunmId(), entityPersister.getIdType(),
+							entityPersister.getEntityId()));//id也作为一个属性放入属性列表中里面
 			
 			if (null != mapping.getJabCfgClass().getPropertys()) {
 				List<JacCfgClassProperty> propertys = mapping.getJabCfgClass().getPropertys();
@@ -164,6 +195,7 @@ public class TableEntityPersister implements EntityPersister {
 						subClassPersister.setLazy(jabCfgSet.getJabCfgOneToMany().isLazy());
 						subClassPersister.setType(SubClassPersister.rl_type.one_to_many);
 					}
+					subClassPersister.setOwner(entityPersister);
 					entityPersister.addSubClass(jabCfgSet.getName(), subClassPersister);
 				}
 			}
@@ -173,11 +205,20 @@ public class TableEntityPersister implements EntityPersister {
 					JabCfgManyToOne jabCfgManyToOne = (JabCfgManyToOne) iterator.next();
 					SubClassPersister subClassPersister = new SubClassPersister(); 
 					subClassPersister.setName(jabCfgManyToOne.getName());
-					subClassPersister.setPrimaryKey(jabCfgManyToOne.getColumn());
+					subClassPersister.setClassName(jabCfgManyToOne.getClazz());
+					subClassPersister.setForeignKey(jabCfgManyToOne.getColumn());
 					subClassPersister.setLazy(jabCfgManyToOne.isLazy());
 					subClassPersister.setType(SubClassPersister.rl_type.many_to_one);
+					
+					subClassPersister.setOwner(entityPersister);
+					
+					entityPersister.addForeignId(jabCfgManyToOne.getName(), jabCfgManyToOne.getColumn());//方便后面将id区
+					
 					entityPersister.addSubClass(jabCfgManyToOne.getName(), subClassPersister);
 				}
+			}
+			if(null != mapping.getJabCfgClass().getOneToOneList()) {
+				
 			}
 			
 		} catch (JAXBException e) {

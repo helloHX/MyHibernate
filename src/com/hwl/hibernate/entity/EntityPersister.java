@@ -8,4 +8,5 @@ package com.hwl.hibernate.entity;
 public interface EntityPersister {
 	String getClassName();
 	String getTableName();
+	String getEntityId();
 }

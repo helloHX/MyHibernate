@@ -16,7 +16,7 @@ import com.hwl.hibernate.cfg.jaxb.JaxbCfgHibernateMapping;
   * @date 2017年12月2日
   */
 public class CfgProcessor {
-	
+	 public final static String SRC = "src/";
 	/**
 	 * 				
 	 * @param resource
@@ -27,14 +27,14 @@ public class CfgProcessor {
 	 * @date: 2017年12月8日 下午3:06:46
 	 */
 	public static JaxbCfgHibernateConfiguration unmarshal(String resource) throws JAXBException {
-		File file = new File(resource);
+		File file = new File(SRC + resource);
 		JAXBContext jaxbContext = JAXBContext.newInstance( JaxbCfgHibernateConfiguration.class );
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		return (JaxbCfgHibernateConfiguration) jaxbUnmarshaller.unmarshal( file );
 	}
 	
 	public static JaxbCfgHibernateMapping unmarshalMapping(String resource) throws JAXBException {
-		File file = new File(resource);
+		File file = new File(SRC + resource);
 		JAXBContext jaxbContext = JAXBContext.newInstance( JaxbCfgHibernateMapping.class );
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		return (JaxbCfgHibernateMapping) jaxbUnmarshaller.unmarshal( file );

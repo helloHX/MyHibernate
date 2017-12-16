@@ -6,11 +6,12 @@ package com.hwl.hibernate.entity;
   * @date 2017年12月11日
   */
 public class SubClassPersister {
+	private TableEntityPersister owner;
 	private String name;
 	private String className;
 	private String tableName;
-	private String foreignKey;
-	private String primaryKey;
+	private String foreignKey;//many_to_many中间表中主表的id的column名/one-to-many子表中主表的id，加载时XML就已经初始化了
+	private String primaryKey;//关联子表的id的column名
 	private boolean lazy;
 	private rl_type type;//表明该子类与主类之间的关系
 	
@@ -23,6 +24,16 @@ public class SubClassPersister {
 	
 	
 	
+	public TableEntityPersister getOwner() {
+		return owner;
+	}
+
+
+	public void setOwner(TableEntityPersister owner) {
+		this.owner = owner;
+	}
+
+
 	public String getName() {
 		return name;
 	}
@@ -39,8 +50,9 @@ public class SubClassPersister {
 
 
 	public SubClassPersister(String name, String className, String tableName, String foreignKey, String primaryKey,
-			boolean lazy, rl_type type) {
+			boolean lazy, rl_type type,TableEntityPersister owner) {
 		super();
+		this.owner = owner;
 		this.name = name;
 		this.className = className;
 		this.tableName = tableName;
@@ -52,8 +64,9 @@ public class SubClassPersister {
 
 
 	public SubClassPersister(String name, String className, String foreignKey, boolean lazy,
-			rl_type type) {
+			rl_type type,TableEntityPersister owner) {
 		super();
+		this.owner = owner;
 		this.name = name;
 		this.className = className;
 		this.foreignKey = foreignKey;

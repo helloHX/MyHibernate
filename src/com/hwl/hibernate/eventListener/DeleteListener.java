@@ -7,10 +7,10 @@ import java.sql.Connection;
   * @author huangWenLong
   * @date 2017Äê12ÔÂ12ÈÕ
   */
-public class DeletListener implements Listener {
+public class DeleteListener implements Listener {
 	private Connection connection;
 	
-	public DeletListener( Connection connection) {
+	public DeleteListener( Connection connection) {
 		super();
 		this.connection = connection;
 	}
