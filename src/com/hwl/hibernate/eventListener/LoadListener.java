@@ -206,7 +206,6 @@ public class LoadListener implements Listener {
 		Object result = null;
 			result = event.getEventSource().getPersistenceContext().getFrCollectionCache(foreignKey);
 		if(result == null){
-
 			ResultSet resultSet = null;
 			try {
 				// 一对多
@@ -440,10 +439,10 @@ public class LoadListener implements Listener {
 
 		StringBuffer sql = createSelectPart(entityPersister);
 
-		sql.append("from " + subClassPersister.getTableName() + " LEFT JOIN " + entityPersister.getTableName());
-		sql.append("ON (" + subClassPersister.getTableName() + "." + subClassPersister.getPrimaryKey() + " = "
+		sql.append(" from " + subClassPersister.getTableName() + " LEFT JOIN " + entityPersister.getTableName());
+		sql.append(" ON (" + subClassPersister.getTableName() + "." + subClassPersister.getPrimaryKey() + " = "
 				+ entityPersister.getTableName() + "." + entityPersister.getColunmId() + ")");
-		sql.append("where " + subClassPersister.getForeignKey());// 需要主表中Id的column名字
+		sql.append(" where " + subClassPersister.getForeignKey());// 需要主表中Id的column名字
 		switch (subClassPersister.getOwner().getIdType()) {// 主表中组件的类型
 		case "string":// 子表中主表的外键
 			sql.append(" = '" + ownerID + "' ");

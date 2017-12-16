@@ -1,6 +1,7 @@
 package com.hwl.hibernate.test.entity;
 
 import java.io.Serializable;
+import java.util.Set;
 
 
 public class Student {
@@ -10,7 +11,17 @@ public class Student {
 	private String code;
 	private String name;
 	private Integer age;
+	private Set<Address> address;
 	
+	
+	public Set<Address> getAddress() {
+		return address;
+	}
+
+	public void setAddress(Set<Address> address) {
+		this.address = address;
+	}
+
 	public Student(String code, String name, int age) {
 		super();
 		this.code = code;

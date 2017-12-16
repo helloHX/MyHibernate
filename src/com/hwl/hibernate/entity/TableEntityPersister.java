@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 
 import com.hwl.hibernate.cfg.CfgProcessor;
 import com.hwl.hibernate.cfg.jaxb.JabCfgManyToOne;
+import com.hwl.hibernate.cfg.jaxb.JabCfgOneToOne;
 import com.hwl.hibernate.cfg.jaxb.JabCfgSet;
 import com.hwl.hibernate.cfg.jaxb.JaxbCfgHibernateMapping;
 import com.hwl.hibernate.cfg.jaxb.JabCfgClass.JacCfgClassProperty;
@@ -131,11 +132,7 @@ public class TableEntityPersister implements EntityPersister {
 		this.tableName = tableName;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.hwl.hibernate.EntityPersister#getTableName()
-	 */
+	
 	@Override
 	public String getTableName() {
 		return this.tableName;
@@ -187,6 +184,7 @@ public class TableEntityPersister implements EntityPersister {
 						subClassPersister.setClassName(jabCfgSet.getJabCfgManyToMany().getClazz());
 						subClassPersister.setPrimaryKey(jabCfgSet.getJabCfgManyToMany().getColumn());
 						subClassPersister.setLazy(jabCfgSet.getJabCfgManyToMany().isLazy());
+						entityPersister.addForeignId(jabCfgSet.getName(), jabCfgSet.getJabCfgForeignKey().getColumn());//方便后面将id区
 						subClassPersister.setType(SubClassPersister.rl_type.many_to_many);
 					}
 					if(jabCfgSet.getJabCfgOneToMany() != null) {
@@ -196,6 +194,7 @@ public class TableEntityPersister implements EntityPersister {
 						subClassPersister.setType(SubClassPersister.rl_type.one_to_many);
 					}
 					subClassPersister.setOwner(entityPersister);
+					
 					entityPersister.addSubClass(jabCfgSet.getName(), subClassPersister);
 				}
 			}
@@ -217,8 +216,20 @@ public class TableEntityPersister implements EntityPersister {
 					entityPersister.addSubClass(jabCfgManyToOne.getName(), subClassPersister);
 				}
 			}
-			if(null != mapping.getJabCfgClass().getOneToOneList()) {
-				
+			if(null != mapping.getJabCfgClass().getOneToOneList()) {//一对一
+				List<JabCfgOneToOne> oneToOneList = mapping.getJabCfgClass().getOneToOneList();
+				for (Iterator iterator = oneToOneList.iterator(); iterator.hasNext();) {
+					JabCfgOneToOne jabCfgOneToOne = (JabCfgOneToOne) iterator.next();
+					SubClassPersister subClassPersister = new SubClassPersister(); 
+					subClassPersister.setName(jabCfgOneToOne.getName());
+					subClassPersister.setClassName(jabCfgOneToOne.getClazz());
+					subClassPersister.setForeignKey(jabCfgOneToOne.getColumn());
+					subClassPersister.setLazy(jabCfgOneToOne.isLazy());
+					subClassPersister.setType(SubClassPersister.rl_type.one_to_one);
+					subClassPersister.setOwner(entityPersister);
+					entityPersister.addForeignId(jabCfgOneToOne.getName(), jabCfgOneToOne.getColumn());//方便后面将id区
+					entityPersister.addSubClass(jabCfgOneToOne.getName(), subClassPersister);
+				}
 			}
 			
 		} catch (JAXBException e) {

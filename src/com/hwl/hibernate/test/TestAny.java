@@ -29,21 +29,8 @@ class TestAny {
 		System.out.println(student.getName());
 		System.out.println(student.getAge());
 		System.out.println(student.getClassRoom().getCode());
+		System.out.println(student.getAddress().size());
 	}
-//	@Test
-//	void test() {
-//		Map<TestEntity,String> map = new HashMap<>();
-//		TestEntity t1 = new TestEntity();
-//		t1.setEntityName("11");
-//		t1.setEntitySize(2);
-//		map.put(t1, "a");
-//		TestEntity t2 = new TestEntity();
-//		t2.setEntityName("11");
-//		t2.setEntitySize(2);
-//		Set<TestEntity> key = map.keySet();
-//		System.out.println(key.contains(t2));
-//		map.put(t1, "b");
-//		System.out.println(map.size());
-//	}
+
 
 }

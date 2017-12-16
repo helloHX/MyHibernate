@@ -53,13 +53,13 @@ public class MyCollectionProxy implements MethodInterceptor {
 
 			String className = entityPersister.getClassName();
 			Object collection =  session.querySubClass(entityPersister, id);//从数据库中记载
-			Class<?> clazz = obj.getClass();
+			Class<?> clazz = target.getClass();
 			Method addMethod = clazz.getMethod("addAll", Collection.class);//记载的内容添加到Collection中
-			addMethod.invoke(obj, collection);
+			addMethod.invoke(target, collection);
 			isLoad = true;
 		}
 	
-		return methodProxy.invokeSuper(obj, args);
+		return method.invoke(target, args);
 	}
 
 }

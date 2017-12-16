@@ -7,5 +7,6 @@
 		<property name="connection.password">123456</property>
 		<mapping resource="com/hwl/hibernate/test/entity/ClassRoom.hbm.xml" />
 		<mapping resource="com/hwl/hibernate/test/entity/Student.hbm.xml" />
+		<mapping resource="com/hwl/hibernate/test/entity/Address.hbm.xml" />
 	</session-factory>
 </hibernate-configuration>

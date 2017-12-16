@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibernate-mapping>
+	<class name="com.hwl.hibernate.test.entity.Address" table="address">
+		<id name="streetId" type="integer" column="streetId">
+			<generator class="native" />
+		</id>
+		<property name="streetName" column="streetName" type="string" />
+		<set  name="stus" table="stuaddress">
+			<key column="streetId" />
+			<many-to-many lazy="true" class="com.hwl.hibernate.test.entity.Student" column="id" />
+		</set>
+	</class>
+</hibernate-mapping>

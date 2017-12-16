@@ -8,5 +8,9 @@
 		<property name="name" column="name" type="string" />
 		<property name="age" column="age" type="integer" />
 		<many-to-one lazy="true" name="classRoom" class="com.hwl.hibernate.test.entity.ClassRoom" column="classRoomId"/>
+		<set  name="address" table="stuaddress">
+			<key column="id" />
+			<many-to-many lazy="true" class="com.hwl.hibernate.test.entity.Address" column="streetid" />
+		</set>
 	</class>
 </hibernate-mapping>
