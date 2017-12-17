@@ -1,36 +1,31 @@
 package com.hwl.hibernate.test;
 
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
 import com.hwl.hibernate.Session;
 import com.hwl.hibernate.SessionFactory;
+import com.hwl.hibernate.Transaction;
 import com.hwl.hibernate.cfg.Configuration;
 import com.hwl.hibernate.test.entity.Student;
 
 /**
-  * class TestAny
+  * class TestDeleteTrancation
   * @author huangWenLong
-  * @date 2017年12月13日
+  * @date 2017年12月17日
   */
-class TestAny {
+class TestDeleteTrancation {
 
 	@Test
 	void test() {
 		Configuration configuration = new Configuration().configure();
 		SessionFactory sessionFactory = configuration.buildSessionFactory();
 		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTranscation();
 		Student student = (Student) session.load(Student.class, 28);
-		System.out.println(student.getCode());
-		System.out.println(student.getName());
-		System.out.println(student.getAge());
-		System.out.println(student.getClassRoom().getCode());
-		System.out.println(student.getAddress().size());
+		session.delete(student);
+		transaction.commit();
 	}
-
 
 }

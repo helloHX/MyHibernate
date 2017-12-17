@@ -14,10 +14,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JabCfgSet {
 	private String name;
 	private String table;
+	private boolean inverse;
+	private String cascade;
 	private JabCfgForeignKey jabCfgForeignKey;
 	private JabCfgManyToMany JabCfgManyToMany;
 	private JabCfgOneToMany JabCfgOneToMany;
 
+	
+	public boolean isInverse() {
+		return inverse;
+	}
+	@XmlAttribute(name = "inverse")
+	public void setInverse(boolean inverse) {
+		this.inverse = inverse;
+	}
+	
+	public String getCascade() {
+		return cascade;
+	}
+	@XmlAttribute(name = "cascade")
+	public void setCascade(String cascade) {
+		this.cascade = cascade;
+	}
 	public JabCfgOneToMany getJabCfgOneToMany() {
 		return JabCfgOneToMany;
 	}

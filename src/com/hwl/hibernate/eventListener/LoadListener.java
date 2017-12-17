@@ -28,6 +28,7 @@ import com.hwl.hibernate.entity.SubClassPersister;
 import com.hwl.hibernate.entity.TableEntityPersister;
 import com.hwl.hibernate.proxy.MyCollectionProxy;
 import com.hwl.hibernate.proxy.MySingleProxy;
+import com.hwl.hibernate.util.Log;
 import com.hwl.hiernate.event.LoadEvent;
 import com.hwl.hiernate.event.LoadSubCLassEvent;
 
@@ -39,7 +40,7 @@ import com.hwl.hiernate.event.LoadSubCLassEvent;
  */
 public class LoadListener implements Listener {
 	private Connection connection;
-
+	private final Log Log = new Log(LoadListener.class.getName());
 	public LoadListener(Connection connection) {
 		super();
 		this.connection = connection;
@@ -53,7 +54,6 @@ public class LoadListener implements Listener {
 	 * @date: 2017年12月13日 上午10:53:09
 	 */
 	public void load(LoadEvent event) {
-
 		EntityKey entityKey = null;
 		event.setEntityPersister(event.getEventSource().getFactory().getMetaModel(event.getEntityName()));// 实体映射
 		entityKey = new EntityKey(event.getEntityID(), event.getEntityPersister());
@@ -347,7 +347,7 @@ public class LoadListener implements Listener {
 			sql.append(" = '" + id + "' ");
 			break;
 		}
-		System.out.println(sql.toString());
+		Log.info(sql.toString());
 		Statement statement = connection.createStatement();
 		return statement.executeQuery(sql.toString());
 	}
@@ -414,7 +414,7 @@ public class LoadListener implements Listener {
 			sql.append(" = '" + ownerID + "' ");
 			break;
 		}
-		System.out.println(sql.toString());
+		Log.info(sql.toString());
 		Statement statement = connection.createStatement();
 		return statement.executeQuery(sql.toString());
 	}
@@ -457,7 +457,7 @@ public class LoadListener implements Listener {
 			sql.append(" = '" + ownerID + "' ");
 			break;
 		}
-		System.out.println(sql.toString());
+		Log.info(sql.toString());
 		Statement statement = connection.createStatement();
 		return statement.executeQuery(sql.toString());
 	}

@@ -14,6 +14,15 @@ public class SubClassPersister {
 	private String primaryKey;//关联子表的id的column名
 	private boolean lazy;
 	private rl_type type;//表明该子类与主类之间的关系
+	private boolean inverse;
+	private cascade_type cascade;
+	
+	public static enum cascade_type{
+		save_update,
+		delete,
+		all,
+		none
+	}
 	
 	public static enum rl_type{
 		one_to_one,
@@ -22,8 +31,27 @@ public class SubClassPersister {
 		many_to_one
 	}
 	
-	
-	
+	public boolean isInverse() {
+		return inverse;
+	}
+
+
+	public void setInverse(boolean inverse) {
+		this.inverse = inverse;
+	}
+
+
+
+	public cascade_type getCascade() {
+		return cascade;
+	}
+
+
+	public void setCascade(cascade_type cascade) {
+		this.cascade = cascade;
+	}
+
+
 	public TableEntityPersister getOwner() {
 		return owner;
 	}

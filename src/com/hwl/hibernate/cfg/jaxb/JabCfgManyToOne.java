@@ -14,7 +14,24 @@ public class JabCfgManyToOne {
 	private String clazz;
 	private String column;
 	private boolean lazy;
+	private boolean inverse;
+	private String cascade;
+
+	public boolean isInverse() {
+		return inverse;
+	}
+	@XmlAttribute(name = "inverse")
+	public void setInverse(boolean inverse) {
+		this.inverse = inverse;
+	}
 	
+	public String getCascade() {
+		return cascade;
+	}
+	@XmlAttribute(name = "cascade")
+	public void setCascade(String cascade) {
+		this.cascade = cascade;
+	}
 	public boolean isLazy() {
 		return lazy;
 	}

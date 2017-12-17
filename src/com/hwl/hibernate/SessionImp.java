@@ -3,8 +3,10 @@ package com.hwl.hibernate;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.hwl.hibernate.entity.SubClassPersister;
 import com.hwl.hibernate.eventListener.DeleteListener;
@@ -12,6 +14,7 @@ import com.hwl.hibernate.eventListener.Listener;
 import com.hwl.hibernate.eventListener.LoadListener;
 import com.hwl.hibernate.eventListener.SaveListener;
 import com.hwl.hibernate.eventListener.UpdateListener;
+import com.hwl.hiernate.event.DeleteEvent;
 import com.hwl.hiernate.event.LoadEvent;
 import com.hwl.hiernate.event.LoadSubCLassEvent;
 
@@ -24,7 +27,9 @@ import com.hwl.hiernate.event.LoadSubCLassEvent;
 public class SessionImp implements Session {
 	private SessionFactory factory;
 	private List<Listener> eventManager;
+	private Map<String,List<String>> actionQueue;
 	private PersistenceContext persistenceContext;
+	private Transaction transaction;
 	private Connection connection;
 
 	public SessionImp(SessionFactory factory) {
@@ -32,9 +37,56 @@ public class SessionImp implements Session {
 		this.persistenceContext = new PersistenceContext(this);
 		this.eventManager = new ArrayList<>();
 		this.connection = factory.getJdbChelper().getConnection();
+		initActionQueue();
 		initSessionListener(connection);
 	}
+	
+	public void initActionQueue() {
+		this.actionQueue = new HashMap<>();
+		this.actionQueue.put("insert", new ArrayList<String>());
+		this.actionQueue.put("update", new ArrayList<String>());
+		this.actionQueue.put("delete", new ArrayList<String>());
+	}
+	
+	/**
+	 * 
+	 * @return: boolean
+	 * @author: huangWenLong
+	 * @Description:加入事务队列
+	 * @date: 2017年12月17日 下午4:42:02
+	 */
+	@Override
+	public boolean addDeleteAction(String sql) {
+		if(transaction != null && transaction.isActive()) {
+			this.actionQueue.get(DELETE).add(sql);
+			return true;
+		}
+		return false;
+	}
 
+	@Override
+	public boolean addUpdateAction(String sql) {
+		if(transaction != null && transaction.isActive()) {
+			this.actionQueue.get(UPDATE).add(sql);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addInsertAction(String sql) {
+		if(transaction != null && transaction.isActive()) {
+			this.actionQueue.get(INSERT).add(sql);
+			return true;
+		}
+		return false;
+	}
+
+	public Transaction beginTranscation() {
+		transaction = new TranscationImp(connection, this);
+		return this.transaction;
+	}
+	
 	/**
 	 * 
 	 * @return: void
@@ -68,11 +120,24 @@ public class SessionImp implements Session {
 	@Override
 	public void delete(Object object) {
 		// TODO 创建一个删除事件传递给Listener后面由listener处理
+		DeleteEvent event = new DeleteEvent(this);
+		event.setObj(object);
+		for (Iterator iterator = eventManager.iterator(); iterator.hasNext();) {
+			Listener listener = (Listener) iterator.next();
+			if (listener instanceof DeleteListener) {
+				DeleteListener loadListener = (DeleteListener) listener;
+				try {
+					loadListener.delete(event);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		object = null;
 	}
 
 	@Override
 	public void clear() {
-
 	}
 
 	@Override
@@ -172,6 +237,14 @@ public class SessionImp implements Session {
 			}
 		}
 		return event.getResult();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hwl.hibernate.Session#getActionQueue()
+	 */
+	@Override
+	public Map<String, List<String>> getActionQueue() {
+		return this.actionQueue;
 	}
 
 }
