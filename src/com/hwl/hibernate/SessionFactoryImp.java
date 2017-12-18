@@ -7,8 +7,8 @@ import java.util.List;
 import com.hwl.hibernate.cfg.MappingReference;
 import com.hwl.hibernate.cfg.MyRegistry;
 import com.hwl.hibernate.db.JDBChelper;
-import com.hwl.hibernate.entity.EntityPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 
 /**
  * class SessionFactoryImp

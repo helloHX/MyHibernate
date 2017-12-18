@@ -2,8 +2,8 @@ package com.hwl.hibernate;
 
 import java.io.Serializable;
 
-import com.hwl.hibernate.entity.EntityPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 
 
 /**

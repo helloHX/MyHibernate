@@ -8,9 +8,9 @@ import javax.xml.bind.JAXBException;
 
 import org.junit.jupiter.api.Test;
 
-import com.hwl.hibernate.entity.PersisterProperty;
-import com.hwl.hibernate.entity.SubClassPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.PersisterProperty;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 
 /**
  * class UnmarshalTest

@@ -1,4 +1,4 @@
-package com.hwl.hibernate.entity;
+package com.hwl.hibernate.entityDBMapping;
 
 /**
   * class PersisterProperty

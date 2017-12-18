@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 
 import com.hwl.hibernate.Session;
-import com.hwl.hibernate.entity.SubClassPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 import com.hwl.hibernate.util.StringUtil;
 
 import net.sf.cglib.proxy.Enhancer;

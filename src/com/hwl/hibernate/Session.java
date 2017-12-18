@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import com.hwl.hibernate.entity.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
 
 /**
  * class Session

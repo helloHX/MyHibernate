@@ -1,4 +1,4 @@
-package com.hwl.hibernate.entity;
+package com.hwl.hibernate.entityDBMapping;
 
 /**
   * class JoinedSubclassEntityPersister
@@ -7,7 +7,7 @@ package com.hwl.hibernate.entity;
   */
 public class SubClassPersister {
 	private TableEntityPersister owner;
-	private String name;
+	private String name;//属性名
 	private String className;
 	private String tableName;
 	private String foreignKey;//many_to_many中间表中主表的id的column名/one-to-many子表中主表的id，加载时XML就已经初始化了

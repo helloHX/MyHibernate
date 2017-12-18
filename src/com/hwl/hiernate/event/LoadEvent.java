@@ -3,7 +3,7 @@ package com.hwl.hiernate.event;
 import java.io.Serializable;
 
 import com.hwl.hibernate.Session;
-import com.hwl.hibernate.entity.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
 
 /**
   * class LoadEvent

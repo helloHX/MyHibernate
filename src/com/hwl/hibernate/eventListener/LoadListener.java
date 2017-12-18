@@ -22,10 +22,10 @@ import java.util.Set;
 import com.hwl.hibernate.EntityKey;
 import com.hwl.hibernate.ForeignKey;
 import com.hwl.hibernate.Session;
-import com.hwl.hibernate.entity.EntityPersister;
-import com.hwl.hibernate.entity.PersisterProperty;
-import com.hwl.hibernate.entity.SubClassPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.PersisterProperty;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 import com.hwl.hibernate.proxy.MyCollectionProxy;
 import com.hwl.hibernate.proxy.MySingleProxy;
 import com.hwl.hibernate.util.Log;
@@ -80,6 +80,7 @@ public class LoadListener implements Listener {
 		TableEntityPersister entityPersister = (TableEntityPersister) event.getEntityPersister();
 		EntityKey key = new EntityKey(event.getEntityID(), entityPersister);
 		Object target = null;
+		Object snapshot = null;
 		target = event.getEventSource().getPersistenceContext().getEntitiesByKey(key);// 从缓存里面加载
 		if (target == null) {// 从数据库中加载
 			Class<?> clazz = Class.forName(event.getEntityName());
@@ -87,7 +88,10 @@ public class LoadListener implements Listener {
 					event.getEntityID());
 			List<Map<String, Object>> hander = resultSetHander(resultSet);
 			target = initObject(clazz, hander, entityPersister).get(0);// 基础类型初始化
-			event.getEventSource().getPersistenceContext().addObjectToCache(key, target);// 加入缓存中
+			snapshot = initObject(clazz, hander, entityPersister).get(0);// 基础类型初始化
+			
+			event.getEventSource().getPersistenceContext().addObjectToCache(key, target,snapshot);// 加入缓存中-与快照
+			
 			tryLoadSubClass(entityPersister, target, event.getEventSource(), hander.get(0));
 		}
 		// 加载完成后
@@ -176,10 +180,12 @@ public class LoadListener implements Listener {
 				List<Map<String, Object>> hander = resultSetHander(resultSet);
 				List<Object> obj = initObject(Class.forName(event.getEntityPersister().getClassName()), hander,
 						(TableEntityPersister) event.getEntityPersister());
+				List<Object> snapshot = initObject(Class.forName(event.getEntityPersister().getClassName()), hander,
+						(TableEntityPersister) event.getEntityPersister());
 				// 判断懒加载对象中还不是还有需要加载的子对象内容
 				result = obj.get(0);// 这里只有一个
 
-				event.getEventSource().getPersistenceContext().addForeginEntity(foreignKey, result);// 添加到外键缓冲中
+				event.getEventSource().getPersistenceContext().addForeginEntity(foreignKey, result,snapshot.get(0));// 添加到外键缓冲中
 
 				ssClassLoad(event, hander, obj);
 			} catch (SQLException e) {
@@ -221,11 +227,16 @@ public class LoadListener implements Listener {
 				List<Map<String, Object>> hander = resultSetHander(resultSet);
 				List<Object> objList = initObject(Class.forName(event.getEntityPersister().getClassName()), hander,
 						(TableEntityPersister) event.getEntityPersister());
+				List<Object> objListSnapshot = initObject(Class.forName(event.getEntityPersister().getClassName()), hander,
+						(TableEntityPersister) event.getEntityPersister());
 				// 添加到集合缓存中
 				Set<Object> objSet = new HashSet<>();
 				objSet.addAll(objList);
 				
-				event.getEventSource().getPersistenceContext().addFrCollectionCache(foreignKey, objSet);
+				Set<Object> objSetSnapshot = new HashSet<>();
+				objSet.addAll(objListSnapshot);
+				
+				event.getEventSource().getPersistenceContext().addFrCollectionCache(foreignKey, objSet,objSetSnapshot);
 				ssClassLoad(event, hander, objList);
 				event.setResult(objSet);
 

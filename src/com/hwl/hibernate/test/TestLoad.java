@@ -17,7 +17,7 @@ import com.hwl.hibernate.test.entity.Student;
   * @author huangWenLong
   * @date 2017Äê12ÔÂ13ÈÕ
   */
-class TestAny {
+class TestLoad {
 
 	@Test
 	void test() {

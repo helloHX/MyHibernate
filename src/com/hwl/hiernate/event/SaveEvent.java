@@ -3,7 +3,7 @@ package com.hwl.hiernate.event;
 import java.io.Serializable;
 
 import com.hwl.hibernate.Session;
-import com.hwl.hibernate.entity.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
 
 /**
   * class SaveEvent
@@ -14,18 +14,27 @@ public class SaveEvent extends AbstractEvent {
 	private Object object;
 	private Session eventSource;
 	private Serializable id;
+	private String objName;
+	public String getObjName() {
+		return objName;
+	}
+	public void setObjName(String objName) {
+		this.objName = objName;
+	}
 	private EntityPersister entityPersister;
 	/**
 	 * @param eventSource
 	 */
 	public SaveEvent(Session eventSource) {
 		super(eventSource);
+		this.eventSource = eventSource;
 	}
 	public Object getObject() {
 		return object;
 	}
 	public void setObject(Object object) {
 		this.object = object;
+		this.objName = object.getClass().getName();
 	}
 	public Session getEventSource() {
 		return eventSource;

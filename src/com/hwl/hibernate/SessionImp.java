@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.hwl.hibernate.entity.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
 import com.hwl.hibernate.eventListener.DeleteListener;
 import com.hwl.hibernate.eventListener.Listener;
 import com.hwl.hibernate.eventListener.LoadListener;
@@ -17,6 +17,8 @@ import com.hwl.hibernate.eventListener.UpdateListener;
 import com.hwl.hiernate.event.DeleteEvent;
 import com.hwl.hiernate.event.LoadEvent;
 import com.hwl.hiernate.event.LoadSubCLassEvent;
+import com.hwl.hiernate.event.SaveEvent;
+import com.hwl.hiernate.event.UpdateEvent;
 
 /**
  * class SessionImp
@@ -125,9 +127,9 @@ public class SessionImp implements Session {
 		for (Iterator iterator = eventManager.iterator(); iterator.hasNext();) {
 			Listener listener = (Listener) iterator.next();
 			if (listener instanceof DeleteListener) {
-				DeleteListener loadListener = (DeleteListener) listener;
+				DeleteListener deleteListener = (DeleteListener) listener;
 				try {
-					loadListener.delete(event);
+					deleteListener.delete(event);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -142,7 +144,17 @@ public class SessionImp implements Session {
 
 	@Override
 	public Serializable save(Object object) {
-		return null;
+		SaveEvent event = new SaveEvent(this);
+		event.setObject(object);
+		event.setId(Integer.parseInt((System.currentTimeMillis() % 500) + ""));
+		for (Iterator iterator = eventManager.iterator(); iterator.hasNext();) {
+			Listener listener = (Listener) iterator.next();
+			if (listener instanceof SaveListener) {
+				SaveListener saveListener = (SaveListener) listener;
+				saveListener.save(event);
+			}
+		}
+		return event.getId();
 	}
 
 	@Override
@@ -202,7 +214,15 @@ public class SessionImp implements Session {
 
 	@Override
 	public void update(Object object) {
-
+		UpdateEvent event = new UpdateEvent(this);
+		event.setObject(object);
+		for (Iterator iterator = eventManager.iterator(); iterator.hasNext();) {
+			Listener listener = (Listener) iterator.next();
+			if (listener instanceof UpdateListener) {
+				UpdateListener uploadListener = (UpdateListener) listener;
+				uploadListener.update(event);
+			}
+		}
 	}
 
 	

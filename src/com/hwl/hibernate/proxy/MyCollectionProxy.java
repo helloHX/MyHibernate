@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.hwl.hibernate.Session;
-import com.hwl.hibernate.entity.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
 
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;

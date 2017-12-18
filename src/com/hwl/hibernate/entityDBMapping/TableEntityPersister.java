@@ -1,4 +1,4 @@
-package com.hwl.hibernate.entity;
+package com.hwl.hibernate.entityDBMapping;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,17 +23,17 @@ import com.hwl.hibernate.cfg.jaxb.JabCfgClass.JacCfgClassProperty;
  * @date 2017年12月11日
  */
 public class TableEntityPersister implements EntityPersister {
-	
+
 	private String className;
 	private String tableName;
-	private String entityId;//主键属性名
-	private String colunmId;//主键表列名
+	private String entityId;// 主键属性名
+	private String colunmId;// 主键表列名
 	private String idType;
 	private boolean lazy;
-	private Map<String,String> foreignId;//一对一/多的属性-外键
+	private Map<String, String> foreignId;// 一对一/多的属性-外键
 	private Map<String, PersisterProperty> propertys;// 实体属性名与数据库字段信息的键值对
-	private Map<String,String> fieldMap;//数据库字段-属性
-	private Map<String,String> subClassMap;//数据库外键-属性
+	private Map<String, String> fieldMap;// 数据库字段-属性
+	private Map<String, String> subClassMap;// 数据库外键-属性
 	private Map<String, SubClassPersister> subClass;// 外联表的关联
 
 	public TableEntityPersister() {
@@ -43,29 +43,28 @@ public class TableEntityPersister implements EntityPersister {
 		subClassMap = new HashMap<>();
 		fieldMap = new HashMap<>();
 	}
-	
-	public void addForeignId(String name,String idName) {
+
+	public void addForeignId(String name, String idName) {
 		this.foreignId.put(name, idName);
 	}
-	
-	
+
 	public Map<String, String> getForeignId() {
 		return foreignId;
 	}
 
-	public void addSubClass(String name,SubClassPersister subClassPersister) {
+	public void addSubClass(String name, SubClassPersister subClassPersister) {
 		this.subClassMap.put(subClassPersister.getPrimaryKey(), name);
 		this.subClass.put(name, subClassPersister);
 	}
-	
+
 	public String getFiledName(String colunm) {
 		return fieldMap.get(colunm);
 	}
-	
+
 	public String getSubClassName(String colunm) {
 		return fieldMap.get(colunm);
 	}
-	
+
 	public boolean isLazy() {
 		return lazy;
 	}
@@ -132,7 +131,6 @@ public class TableEntityPersister implements EntityPersister {
 		this.tableName = tableName;
 	}
 
-	
 	@Override
 	public String getTableName() {
 		return this.tableName;
@@ -150,18 +148,17 @@ public class TableEntityPersister implements EntityPersister {
 		TableEntityPersister entityPersister = new TableEntityPersister();
 		try {
 			JaxbCfgHibernateMapping mapping = CfgProcessor.unmarshalMapping(resourcePath);
-			
+
 			entityPersister.setClassName(mapping.getJabCfgClass().getName());
 			entityPersister.setTableName(mapping.getJabCfgClass().getTable());
 			entityPersister.setLazy(mapping.getJabCfgClass().isLazy());
 			entityPersister.setEntityId(mapping.getJabCfgClass().getJaxCfgClassId().getName());
 			entityPersister.setColunmId(mapping.getJabCfgClass().getJaxCfgClassId().getColumn());
 			entityPersister.setIdType(mapping.getJabCfgClass().getJaxCfgClassId().getType());
-			
-			entityPersister.addProperty(entityPersister.getEntityId(),
-					new PersisterProperty(entityPersister.getColunmId(), entityPersister.getIdType(),
-							entityPersister.getEntityId()));//id也作为一个属性放入属性列表中里面
-			
+
+			entityPersister.addProperty(entityPersister.getEntityId(), new PersisterProperty(
+					entityPersister.getColunmId(), entityPersister.getIdType(), entityPersister.getEntityId()));// id也作为一个属性放入属性列表中里面
+
 			if (null != mapping.getJabCfgClass().getPropertys()) {
 				List<JacCfgClassProperty> propertys = mapping.getJabCfgClass().getPropertys();
 				for (Iterator iterator = propertys.iterator(); iterator.hasNext();) {
@@ -179,63 +176,90 @@ public class TableEntityPersister implements EntityPersister {
 					subClassPersister.setForeignKey(jabCfgSet.getJabCfgForeignKey().getColumn());
 					subClassPersister.setTableName(jabCfgSet.getTable());
 					subClassPersister.setName(jabCfgSet.getName());
+					subClassPersister.setInverse(jabCfgSet.isInverse());
+					setCascade(subClassPersister, jabCfgSet.getCascade());
 					
-					if(jabCfgSet.getJabCfgManyToMany() != null) {
+					if (jabCfgSet.getJabCfgManyToMany() != null) {
 						subClassPersister.setClassName(jabCfgSet.getJabCfgManyToMany().getClazz());
 						subClassPersister.setPrimaryKey(jabCfgSet.getJabCfgManyToMany().getColumn());
 						subClassPersister.setLazy(jabCfgSet.getJabCfgManyToMany().isLazy());
-						entityPersister.addForeignId(jabCfgSet.getName(), jabCfgSet.getJabCfgForeignKey().getColumn());//方便后面将id区
+						entityPersister.addForeignId(jabCfgSet.getName(), jabCfgSet.getJabCfgForeignKey().getColumn());// 方便后面将id区
 						subClassPersister.setType(SubClassPersister.rl_type.many_to_many);
 					}
-					if(jabCfgSet.getJabCfgOneToMany() != null) {
+					if (jabCfgSet.getJabCfgOneToMany() != null) {
 						subClassPersister.setClassName(jabCfgSet.getJabCfgOneToMany().getClazz());
 						subClassPersister.setPrimaryKey(jabCfgSet.getJabCfgOneToMany().getColumn());
 						subClassPersister.setLazy(jabCfgSet.getJabCfgOneToMany().isLazy());
 						subClassPersister.setType(SubClassPersister.rl_type.one_to_many);
 					}
 					subClassPersister.setOwner(entityPersister);
-					
+
 					entityPersister.addSubClass(jabCfgSet.getName(), subClassPersister);
 				}
 			}
-			if(null != mapping.getJabCfgClass().getManyToOneList()) {
+			if (null != mapping.getJabCfgClass().getManyToOneList()) {
 				List<JabCfgManyToOne> manyToOneList = mapping.getJabCfgClass().getManyToOneList();
 				for (Iterator iterator = manyToOneList.iterator(); iterator.hasNext();) {
 					JabCfgManyToOne jabCfgManyToOne = (JabCfgManyToOne) iterator.next();
-					SubClassPersister subClassPersister = new SubClassPersister(); 
+					SubClassPersister subClassPersister = new SubClassPersister();
 					subClassPersister.setName(jabCfgManyToOne.getName());
 					subClassPersister.setClassName(jabCfgManyToOne.getClazz());
 					subClassPersister.setForeignKey(jabCfgManyToOne.getColumn());
 					subClassPersister.setLazy(jabCfgManyToOne.isLazy());
 					subClassPersister.setType(SubClassPersister.rl_type.many_to_one);
+					subClassPersister.setInverse(jabCfgManyToOne.isInverse());
+					setCascade(subClassPersister, jabCfgManyToOne.getCascade());
 					
 					subClassPersister.setOwner(entityPersister);
-					
-					entityPersister.addForeignId(jabCfgManyToOne.getName(), jabCfgManyToOne.getColumn());//方便后面将id区
-					
+
+					entityPersister.addForeignId(jabCfgManyToOne.getName(), jabCfgManyToOne.getColumn());// 方便后面将id区
+
 					entityPersister.addSubClass(jabCfgManyToOne.getName(), subClassPersister);
 				}
 			}
-			if(null != mapping.getJabCfgClass().getOneToOneList()) {//一对一
+			if (null != mapping.getJabCfgClass().getOneToOneList()) {// 一对一
 				List<JabCfgOneToOne> oneToOneList = mapping.getJabCfgClass().getOneToOneList();
 				for (Iterator iterator = oneToOneList.iterator(); iterator.hasNext();) {
 					JabCfgOneToOne jabCfgOneToOne = (JabCfgOneToOne) iterator.next();
-					SubClassPersister subClassPersister = new SubClassPersister(); 
+					SubClassPersister subClassPersister = new SubClassPersister();
 					subClassPersister.setName(jabCfgOneToOne.getName());
 					subClassPersister.setClassName(jabCfgOneToOne.getClazz());
 					subClassPersister.setForeignKey(jabCfgOneToOne.getColumn());
 					subClassPersister.setLazy(jabCfgOneToOne.isLazy());
 					subClassPersister.setType(SubClassPersister.rl_type.one_to_one);
 					subClassPersister.setOwner(entityPersister);
-					entityPersister.addForeignId(jabCfgOneToOne.getName(), jabCfgOneToOne.getColumn());//方便后面将id区
+					subClassPersister.setInverse(jabCfgOneToOne.isInverse());
+					setCascade(subClassPersister, jabCfgOneToOne.getCascade());
+					entityPersister.addForeignId(jabCfgOneToOne.getName(), jabCfgOneToOne.getColumn());// 方便后面将id区
 					entityPersister.addSubClass(jabCfgOneToOne.getName(), subClassPersister);
 				}
 			}
-			
+
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
 		return entityPersister;
+	}
+	
+	public static void setCascade(SubClassPersister subClassPersister,String cascade) {
+		if(cascade == null) {
+			subClassPersister.setCascade(SubClassPersister.cascade_type.none);
+			return ;
+		}
+		switch (cascade) {
+		case "save-update":
+			subClassPersister.setCascade(SubClassPersister.cascade_type.save_update);
+			break;
+		case "delete":
+			subClassPersister.setCascade(SubClassPersister.cascade_type.delete);
+			break;
+		case "all":
+			subClassPersister.setCascade(SubClassPersister.cascade_type.all);
+			break;
+		case "none":
+			subClassPersister.setCascade(SubClassPersister.cascade_type.none);
+			break;
+		}
 	}
 
 }

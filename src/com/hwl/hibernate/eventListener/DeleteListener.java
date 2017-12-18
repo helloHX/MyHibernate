@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.hwl.hibernate.EntityKey;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 import com.hwl.hibernate.util.StringUtil;
 import com.hwl.hiernate.event.DeleteEvent;
 

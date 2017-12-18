@@ -2,9 +2,9 @@ package com.hwl.hibernate;
 
 import java.io.Serializable;
 
-import com.hwl.hibernate.entity.EntityPersister;
-import com.hwl.hibernate.entity.SubClassPersister;
-import com.hwl.hibernate.entity.TableEntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.SubClassPersister;
+import com.hwl.hibernate.entityDBMapping.TableEntityPersister;
 
 /**
   * class ForeignKey

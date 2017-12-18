@@ -3,7 +3,7 @@ package com.hwl.hibernate;
 import java.util.List;
 
 import com.hwl.hibernate.db.JDBChelper;
-import com.hwl.hibernate.entity.EntityPersister;
+import com.hwl.hibernate.entityDBMapping.EntityPersister;
 
 /**
   * class SessionFactory
